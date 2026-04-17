@@ -1,0 +1,8 @@
+{
+  "Host": "H100_NVL_default",
+  "CPU_SingleThread_Score": 1800,
+  "Kernel_Launch_Chain_us": 1737.2,
+  "Bus_Type": "PCIe_5",
+  "Bus_Bandwidth_GBps": 64,
+  "Notes": "H100 NVL reference host. Kernel_Launch_Chain_us from benchmark_kernel_launch.py (343 mixed kernels)."
+}

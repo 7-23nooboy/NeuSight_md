@@ -149,6 +149,16 @@ def aggregate_pp(trace, model_name, pp_degree, n_layer, num_micro_batch):
 
     return pred_e2e
 
+def aggregate_deepmd(trace):
+    """DeepMD 推理聚合：所有节点 fw_latency 简单求和，无 backward"""
+    fw = trace["fw_latency"].sum()
+    bw = trace["bw_latency"].sum()
+    acc = trace["acc_latency"].sum()
+    bwall = bw + acc
+    e2e = fw + bw + acc
+    return e2e, fw, bw, bwall, acc
+
+
 def aggregate_latency(
         df, 
         model_name, 

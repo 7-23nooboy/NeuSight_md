@@ -1,0 +1,18 @@
+{
+    "model_type": "se_e2_a",
+    "type_map": ["O", "H"],
+    "num_types": 2,
+    "descriptor": {
+        "type": "se_e2_a",
+        "sel": [46, 92],
+        "rcut": 6.0,
+        "rcut_smth": 0.5,
+        "neuron": [25, 50, 100],
+        "axis_neuron": 16,
+        "activation_function": "tanh"
+    },
+    "fitting_net": {
+        "neuron": [240, 240, 240],
+        "activation_function": "tanh"
+    }
+}

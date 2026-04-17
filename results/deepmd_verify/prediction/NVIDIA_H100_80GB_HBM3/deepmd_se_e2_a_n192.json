@@ -1,0 +1,22 @@
+{
+    "model_type": "se_e2_a",
+    "num_atoms": 192,
+    "compute_force": false,
+    "e2e_latency": 5.083,
+    "compute_latency": 0.4157,
+    "fw_latency": 0.41567948892677137,
+    "bw_latency": 0.0,
+    "bwall_latency": 0.0,
+    "acc_latency": 0.0,
+    "overhead": {
+        "total_ms": 4.6673,
+        "kernel_launch_ms": 1.5249,
+        "cpu_dispatch_ms": 5.083,
+        "autograd_ms": 0.0
+    },
+    "kernel_count": {
+        "modeled": 33,
+        "framework": 266,
+        "total": 299
+    }
+}

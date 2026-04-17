@@ -1,0 +1,8 @@
+{
+  "Host": "T4_estimated",
+  "CPU_SingleThread_Score": 1200,
+  "Kernel_Launch_Chain_us": 2600,
+  "Bus_Type": "PCIe_3",
+  "Bus_Bandwidth_GBps": 16,
+  "Notes": "Estimated for T4 (often paired with weaker host CPU). Kernel_Launch_Chain_us estimated as 1.5x H100 reference. Run benchmark_kernel_launch.py on actual host for accurate value."
+}

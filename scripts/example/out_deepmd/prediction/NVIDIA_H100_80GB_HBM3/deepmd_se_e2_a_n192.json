@@ -1,0 +1,10 @@
+{
+    "model_type": "se_e2_a",
+    "num_atoms": 192,
+    "compute_force": false,
+    "e2e_latency": 0.41567931976075684,
+    "fw_latency": 0.41567931976075684,
+    "bw_latency": 0.0,
+    "bwall_latency": 0.0,
+    "acc_latency": 0.0
+}
