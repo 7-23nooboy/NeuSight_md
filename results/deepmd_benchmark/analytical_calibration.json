@@ -1,0 +1,116 @@
+{
+  "model_version": "v5_analytical_roofline",
+  "C_quad": 26.1442,
+  "C_linear": 3933.1825,
+  "fixed_overhead": {
+    "se_e2_a": {
+      "1_type": 4.85,
+      "2_type": 5.66
+    }
+  },
+  "default_ns": 27,
+  "ref_gpu_mem_bw": 3430,
+  "calibration_stats": {
+    "mae_pct": 2.72,
+    "max_error_pct": 17.0,
+    "n_points": 12
+  },
+  "calibration_data": [
+    {
+      "model": "water",
+      "N": 32,
+      "nnei": 138,
+      "real_ms": 5.601,
+      "mlp_ms": 0.24,
+      "pred_ms": 5.66
+    },
+    {
+      "model": "water",
+      "N": 64,
+      "nnei": 138,
+      "real_ms": 5.573,
+      "mlp_ms": 0.358,
+      "pred_ms": 5.66
+    },
+    {
+      "model": "water",
+      "N": 128,
+      "nnei": 138,
+      "real_ms": 5.625,
+      "mlp_ms": 0.597,
+      "pred_ms": 5.66
+    },
+    {
+      "model": "water",
+      "N": 192,
+      "nnei": 138,
+      "real_ms": 5.66,
+      "mlp_ms": 0.832,
+      "pred_ms": 5.66
+    },
+    {
+      "model": "water",
+      "N": 256,
+      "nnei": 138,
+      "real_ms": 5.694,
+      "mlp_ms": 1.065,
+      "pred_ms": 5.66
+    },
+    {
+      "model": "water",
+      "N": 512,
+      "nnei": 138,
+      "real_ms": 5.816,
+      "mlp_ms": 2.008,
+      "pred_ms": 5.66
+    },
+    {
+      "model": "water",
+      "N": 1024,
+      "nnei": 138,
+      "real_ms": 5.909,
+      "mlp_ms": 3.892,
+      "pred_ms": 6.915
+    },
+    {
+      "model": "water",
+      "N": 2048,
+      "nnei": 138,
+      "real_ms": 11.742,
+      "mlp_ms": 2.172,
+      "pred_ms": 11.67
+    },
+    {
+      "model": "water",
+      "N": 4096,
+      "nnei": 138,
+      "real_ms": 35.236,
+      "mlp_ms": 3.834,
+      "pred_ms": 36.641
+    },
+    {
+      "model": "copper",
+      "N": 2048,
+      "nnei": 120,
+      "real_ms": 11.332,
+      "mlp_ms": 2.172,
+      "pred_ms": 11.332
+    },
+    {
+      "model": "copper",
+      "N": 4096,
+      "nnei": 120,
+      "real_ms": 35.128,
+      "mlp_ms": 3.834,
+      "pred_ms": 35.965
+    },
+    {
+      "model": "copper",
+      "N": 8192,
+      "nnei": 120,
+      "real_ms": 129.528,
+      "mlp_ms": 7.228,
+      "pred_ms": 126.734
+    }
+  ]
+}

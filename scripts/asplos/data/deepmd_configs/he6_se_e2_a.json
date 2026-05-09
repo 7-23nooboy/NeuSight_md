@@ -1,0 +1,24 @@
+{
+    "model_type": "se_e2_a",
+    "type_map": ["Li", "Mn", "Ni", "Co", "O", "F"],
+    "num_types": 6,
+    "_comment": "Hypothetical 6-element system (HE high-entropy cathode-like) for stress-testing the v6 overhead model. ntypes=6 means 6×6=36 sub-networks under type_one_side=False.",
+    "descriptor": {
+        "type": "se_e2_a",
+        "sel": [80, 80, 80, 80, 80, 80],
+        "rcut": 6.0,
+        "rcut_smth": 0.5,
+        "neuron": [16, 32, 64],
+        "axis_neuron": 16,
+        "activation_function": "tanh",
+        "type_one_side": false,
+        "resnet_dt": false,
+        "precision": "float32"
+    },
+    "fitting_net": {
+        "neuron": [240, 240, 240],
+        "activation_function": "relu",
+        "resnet_dt": true,
+        "precision": "float32"
+    }
+}

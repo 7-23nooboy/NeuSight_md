@@ -1,0 +1,102 @@
+To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+
+######################################################################
+# Group: water_small
+# Config: water_se_e2_a.json
+# Atoms: [32, 64, 128, 256, 512, 1024, 2048]
+######################################################################
+Building DeepMD model...
+
+--- N = 32 ---
+  measured: mean=8.317ms median=8.304ms std=0.220ms [p5=7.974, p95=8.677]
+  pred (E+F): total=5.865ms compute=1.2922ms overhead=4.5728ms confidence=high
+  pred (E):   total=5.715ms
+  err (E+F vs measured): -29.5%
+
+--- N = 64 ---
+  measured: mean=7.951ms median=7.957ms std=0.236ms [p5=7.570, p95=8.336]
+  pred (E+F): total=5.865ms compute=1.33ms overhead=4.535ms confidence=high
+  pred (E):   total=5.715ms
+  err (E+F vs measured): -26.2%
+
+--- N = 128 ---
+  measured: mean=7.987ms median=7.993ms std=0.223ms [p5=7.654, p95=8.386]
+  pred (E+F): total=5.865ms compute=1.6131ms overhead=4.2519ms confidence=high
+  pred (E):   total=5.715ms
+  err (E+F vs measured): -26.6%
+
+--- N = 256 ---
+  measured: mean=8.186ms median=8.130ms std=0.272ms [p5=7.814, p95=8.642]
+  pred (E+F): total=5.865ms compute=2.0609ms overhead=3.8041ms confidence=high
+  pred (E):   total=5.715ms
+  err (E+F vs measured): -28.3%
+
+--- N = 512 ---
+  measured: mean=8.307ms median=8.251ms std=0.412ms [p5=7.799, p95=8.978]
+  pred (E+F): total=5.865ms compute=2.5346ms overhead=3.3304ms confidence=high
+  pred (E):   total=5.715ms
+  err (E+F vs measured): -29.4%
+
+--- N = 1024 ---
+  measured: mean=8.681ms median=8.678ms std=0.089ms [p5=8.571, p95=8.815]
+  pred (E+F): total=7.989ms compute=3.4736ms overhead=4.5154ms confidence=low
+  pred (E):   total=6.355ms
+  err (E+F vs measured): -8.0%
+
+--- N = 2048 ---
+  measured: mean=19.597ms median=19.584ms std=0.103ms [p5=19.480, p95=19.739]
+  pred (E+F): total=20.631ms compute=4.9684ms overhead=15.6625ms confidence=high
+  pred (E):   total=18.471ms
+  err (E+F vs measured): +5.3%
+
+Saved: /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/water_small.json
+
+######################################################################
+# Group: water_large
+# Config: water_se_e2_a.json
+# Atoms: [4096, 8192]
+######################################################################
+Building DeepMD model...
+
+--- N = 4096 ---
+  measured: mean=57.584ms median=57.524ms std=0.234ms [p5=57.320, p95=57.974]
+  pred (E+F): total=65.994ms compute=8.1421ms overhead=57.8519ms confidence=high
+  pred (E):   total=62.729ms
+  err (E+F vs measured): +14.6%
+
+--- N = 8192 ---
+  measured: mean=200.581ms median=200.565ms std=0.363ms [p5=200.126, p95=201.170]
+  pred (E+F): total=237.012ms compute=15.2007ms overhead=221.8109ms confidence=high
+  pred (E):   total=231.197ms
+  err (E+F vs measured): +18.2%
+
+Saved: /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/water_large.json
+
+######################################################################
+# Group: copper
+# Config: copper_se_e2_a.json
+# Atoms: [2048, 4096, 8192]
+######################################################################
+Building DeepMD model...
+
+--- N = 2048 ---
+  measured: mean=18.268ms median=18.230ms std=0.103ms [p5=18.147, p95=18.401]
+  pred (E+F): total=20.318ms compute=4.9684ms overhead=15.3496ms confidence=high
+  pred (E):   total=18.158ms
+  err (E+F vs measured): +11.2%
+
+--- N = 4096 ---
+  measured: mean=54.226ms median=54.196ms std=0.106ms [p5=54.098, p95=54.397]
+  pred (E+F): total=65.368ms compute=8.1421ms overhead=57.226ms confidence=high
+  pred (E):   total=62.103ms
+  err (E+F vs measured): +20.5%
+
+--- N = 8192 ---
+  measured: mean=193.961ms median=193.982ms std=0.687ms [p5=193.200, p95=194.830]
+  pred (E+F): total=235.760ms compute=15.2007ms overhead=220.5592ms confidence=high
+  pred (E):   total=229.945ms
+  err (E+F vs measured): +21.6%
+
+Saved: /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/copper.json
+
+Wrote /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/REPORT.md

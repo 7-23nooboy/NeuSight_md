@@ -1,0 +1,11 @@
+{
+  "gpu": "NVIDIA H100 NVL",
+  "pytorch_version": "2.10.0+cu128",
+  "elementwise_launch_us": 4.14,
+  "addmm_launch_us": 32.4,
+  "bmm_launch_us": 7.58,
+  "copy_launch_us": 3.69,
+  "mixed_chain_per_kernel_us": 5.06,
+  "mixed_chain_343_total_us": 1737.2,
+  "recommended_per_launch_us": 5.1
+}

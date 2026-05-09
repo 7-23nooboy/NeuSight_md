@@ -1,0 +1,42 @@
+[
+  {
+    "model": "water_se_e2_a",
+    "num_atoms": 64,
+    "real_mean_ms": 5.8065,
+    "real_median_ms": 5.812,
+    "real_std_ms": 0.1292,
+    "predicted_force_ms": 6.7117,
+    "predicted_energy_ms": 5.083,
+    "error_pct": 15.6
+  },
+  {
+    "model": "water_se_e2_a",
+    "num_atoms": 192,
+    "real_mean_ms": 5.9366,
+    "real_median_ms": 5.9325,
+    "real_std_ms": 0.0629,
+    "predicted_force_ms": 6.7117,
+    "predicted_energy_ms": 5.083,
+    "error_pct": 13.1
+  },
+  {
+    "model": "water_se_e2_a",
+    "num_atoms": 512,
+    "real_mean_ms": 5.9524,
+    "real_median_ms": 5.9307,
+    "real_std_ms": 0.1823,
+    "predicted_force_ms": 6.7117,
+    "predicted_energy_ms": 5.083,
+    "error_pct": 12.8
+  },
+  {
+    "model": "water_se_e2_a",
+    "num_atoms": 1024,
+    "real_mean_ms": 5.6168,
+    "real_median_ms": 5.5958,
+    "real_std_ms": 0.1786,
+    "predicted_force_ms": 6.7117,
+    "predicted_energy_ms": 5.083,
+    "error_pct": 19.5
+  }
+]

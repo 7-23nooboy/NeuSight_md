@@ -1,0 +1,60 @@
+{
+  "system": "LiAlOCl",
+  "config": "scripts/asplos/data/deepmd_configs/LiAlOCl_se_e2_a.json",
+  "device_config": "scripts/asplos/data/device_configs/NVIDIA_H100_80GB_HBM3.json",
+  "host_config": "scripts/asplos/data/host_configs/H100_NVL_default.json",
+  "gpu": "NVIDIA H100 NVL",
+  "box_size": 15.0,
+  "warmup": 20,
+  "runs": 100,
+  "rows": [
+    {
+      "num_atoms": 64,
+      "real_mean_ms": 23.1069,
+      "real_median_ms": 23.0582,
+      "real_std_ms": 0.2834,
+      "real_p99_ms": 24.7574,
+      "pred_force_e2e_ms": 12.575,
+      "pred_force_compute_ms": 2.0755,
+      "pred_energy_e2e_ms": 8.72,
+      "pred_energy_compute_ms": 1.2041,
+      "error_pct": -45.6
+    },
+    {
+      "num_atoms": 96,
+      "real_mean_ms": 22.0024,
+      "real_median_ms": 21.9628,
+      "real_std_ms": 0.3576,
+      "real_p99_ms": 22.4486,
+      "pred_force_e2e_ms": 12.575,
+      "pred_force_compute_ms": 2.3038,
+      "pred_energy_e2e_ms": 8.72,
+      "pred_energy_compute_ms": 1.3344,
+      "error_pct": -42.8
+    },
+    {
+      "num_atoms": 192,
+      "real_mean_ms": 23.2046,
+      "real_median_ms": 23.1811,
+      "real_std_ms": 0.2783,
+      "real_p99_ms": 23.3446,
+      "pred_force_e2e_ms": 12.575,
+      "pred_force_compute_ms": 3.2026,
+      "pred_energy_e2e_ms": 8.72,
+      "pred_energy_compute_ms": 1.8869,
+      "error_pct": -45.8
+    },
+    {
+      "num_atoms": 384,
+      "real_mean_ms": 24.1271,
+      "real_median_ms": 24.1262,
+      "real_std_ms": 0.0507,
+      "real_p99_ms": 24.2494,
+      "pred_force_e2e_ms": 12.575,
+      "pred_force_compute_ms": 4.3169,
+      "pred_energy_e2e_ms": 8.72,
+      "pred_energy_compute_ms": 2.5875,
+      "error_pct": -47.9
+    }
+  ]
+}

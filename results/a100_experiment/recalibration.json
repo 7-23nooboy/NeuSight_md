@@ -1,0 +1,629 @@
+{
+  "model_version": "v5_analytical_roofline_A100_recalibrated",
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "gpu_mem_bw": 1935,
+  "recalibrated": {
+    "C_quad": 21.9106,
+    "C_linear": 3597.9057,
+    "fixed_overhead": {
+      "se_e2_a": {
+        "1_type": 6.856,
+        "2_type": 8.307
+      }
+    },
+    "mae_pct": 3.11,
+    "max_err_pct": 7.13
+  },
+  "baseline_h100_constants": {
+    "C_quad": 28.3284,
+    "C_linear": 2053.2321,
+    "fixed_2type": 5.715,
+    "fixed_1type": 4.85,
+    "mae_pct": 15.7,
+    "max_err_pct": 34.51
+  },
+  "partition_stats": {
+    "baseline": {
+      "water/plateau (N<=512)": {
+        "n": 5,
+        "mae": 29.847311702858143,
+        "max": -31.28201428468364
+      },
+      "water/transition (1024-2048)": {
+        "n": 12,
+        "mae": 10.38161372477005,
+        "max": -34.510576856966054
+      },
+      "water/post-trans (2304-3072)": {
+        "n": 3,
+        "mae": 8.440466863764803,
+        "max": 10.544512837133624
+      },
+      "water/compute (N>=4096)": {
+        "n": 2,
+        "mae": 16.38313272657116,
+        "max": 18.162363772767947
+      },
+      "copper/plateau (N<=768)": {
+        "n": 6,
+        "mae": 27.367076408850675,
+        "max": -31.082502060420047
+      },
+      "copper/transition (1024-2048)": {
+        "n": 10,
+        "mae": 8.722714069347234,
+        "max": 14.326588754062636
+      },
+      "copper/post-trans (2304-3072)": {
+        "n": 3,
+        "mae": 16.500679922958646,
+        "max": 18.010098666671297
+      },
+      "copper/compute (N>=4096)": {
+        "n": 2,
+        "mae": 21.04888554127641,
+        "max": 21.550459335098154
+      }
+    },
+    "calibrated": {
+      "water/plateau (N<=512)": {
+        "n": 5,
+        "mae": 2.013157036827734,
+        "max": 4.46713779074497
+      },
+      "water/transition (1024-2048)": {
+        "n": 12,
+        "mae": 3.6011237969555148,
+        "max": -6.029507076490613
+      },
+      "water/post-trans (2304-3072)": {
+        "n": 3,
+        "mae": 0.8446905988107076,
+        "max": -1.182727192748392
+      },
+      "water/compute (N>=4096)": {
+        "n": 2,
+        "mae": 1.1036917382645015,
+        "max": -2.2073834755814916
+      },
+      "copper/plateau (N<=768)": {
+        "n": 6,
+        "mae": 1.1352950666336443,
+        "max": -2.581919500617156
+      },
+      "copper/transition (1024-2048)": {
+        "n": 10,
+        "mae": 4.8905549391629295,
+        "max": 7.1304352499598975
+      },
+      "copper/post-trans (2304-3072)": {
+        "n": 3,
+        "mae": 5.240770279098999,
+        "max": 6.407164483588465
+      },
+      "copper/compute (N>=4096)": {
+        "n": 2,
+        "mae": 2.0853903352386385,
+        "max": 4.170669481378777
+      }
+    }
+  },
+  "rows": [
+    {
+      "model": "copper",
+      "N": 32,
+      "nnei": 120,
+      "real_ms": 6.7162,
+      "mlp_ms": 1.2922,
+      "baseline_pred": 4.85,
+      "calibrated_pred": 6.856,
+      "baseline_err_pct": -27.79,
+      "calibrated_err_pct": 2.08,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 64,
+      "nnei": 120,
+      "real_ms": 6.8013,
+      "mlp_ms": 1.33,
+      "baseline_pred": 4.85,
+      "calibrated_pred": 6.856,
+      "baseline_err_pct": -28.69,
+      "calibrated_err_pct": 0.8,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 128,
+      "nnei": 120,
+      "real_ms": 6.8557,
+      "mlp_ms": 1.6131,
+      "baseline_pred": 4.85,
+      "calibrated_pred": 6.856,
+      "baseline_err_pct": -29.26,
+      "calibrated_err_pct": -0.0,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 256,
+      "nnei": 120,
+      "real_ms": 6.8952,
+      "mlp_ms": 2.0609,
+      "baseline_pred": 4.85,
+      "calibrated_pred": 6.856,
+      "baseline_err_pct": -29.66,
+      "calibrated_err_pct": -0.57,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 512,
+      "nnei": 120,
+      "real_ms": 7.0374,
+      "mlp_ms": 2.5346,
+      "baseline_pred": 4.85,
+      "calibrated_pred": 6.856,
+      "baseline_err_pct": -31.08,
+      "calibrated_err_pct": -2.58,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 768,
+      "nnei": 120,
+      "real_ms": 6.9096,
+      "mlp_ms": 3.0373,
+      "baseline_pred": 5.685,
+      "calibrated_pred": 6.856,
+      "baseline_err_pct": -17.73,
+      "calibrated_err_pct": -0.78,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 896,
+      "nnei": 120,
+      "real_ms": 6.9725,
+      "mlp_ms": 3.3348,
+      "baseline_pred": 6.786,
+      "calibrated_pred": 6.898,
+      "baseline_err_pct": -2.67,
+      "calibrated_err_pct": -1.07,
+      "source": "transition_copper_floor.json"
+    },
+    {
+      "model": "copper",
+      "N": 1024,
+      "nnei": 120,
+      "real_ms": 7.558,
+      "mlp_ms": 3.4736,
+      "baseline_pred": 7.833,
+      "calibrated_pred": 7.866,
+      "baseline_err_pct": 3.63,
+      "calibrated_err_pct": 4.08,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1152,
+      "nnei": 120,
+      "real_ms": 8.5051,
+      "mlp_ms": 3.5698,
+      "baseline_pred": 8.94,
+      "calibrated_pred": 8.872,
+      "baseline_err_pct": 5.11,
+      "calibrated_err_pct": 4.31,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1280,
+      "nnei": 120,
+      "real_ms": 9.662,
+      "mlp_ms": 3.7632,
+      "baseline_pred": 10.248,
+      "calibrated_pred": 10.055,
+      "baseline_err_pct": 6.07,
+      "calibrated_err_pct": 4.07,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1408,
+      "nnei": 120,
+      "real_ms": 10.7976,
+      "mlp_ms": 3.9413,
+      "baseline_pred": 11.645,
+      "calibrated_pred": 11.303,
+      "baseline_err_pct": 7.84,
+      "calibrated_err_pct": 4.68,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1536,
+      "nnei": 120,
+      "real_ms": 11.9769,
+      "mlp_ms": 4.1054,
+      "baseline_pred": 13.131,
+      "calibrated_pred": 12.618,
+      "baseline_err_pct": 9.63,
+      "calibrated_err_pct": 5.35,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1664,
+      "nnei": 120,
+      "real_ms": 13.3094,
+      "mlp_ms": 4.3028,
+      "baseline_pred": 14.754,
+      "calibrated_pred": 14.045,
+      "baseline_err_pct": 10.85,
+      "calibrated_err_pct": 5.53,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1792,
+      "nnei": 120,
+      "real_ms": 14.6616,
+      "mlp_ms": 4.6541,
+      "baseline_pred": 16.634,
+      "calibrated_pred": 15.707,
+      "baseline_err_pct": 13.46,
+      "calibrated_err_pct": 7.13,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 1920,
+      "nnei": 120,
+      "real_ms": 16.2376,
+      "mlp_ms": 4.8381,
+      "baseline_pred": 18.451,
+      "calibrated_pred": 17.282,
+      "baseline_err_pct": 13.63,
+      "calibrated_err_pct": 6.43,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 2048,
+      "nnei": 120,
+      "real_ms": 17.7719,
+      "mlp_ms": 4.9684,
+      "baseline_pred": 20.318,
+      "calibrated_pred": 18.883,
+      "baseline_err_pct": 14.33,
+      "calibrated_err_pct": 6.25,
+      "source": "transition_copper_1024_2048_step128.json"
+    },
+    {
+      "model": "copper",
+      "N": 2304,
+      "nnei": 120,
+      "real_ms": 21.0988,
+      "mlp_ms": 5.3545,
+      "baseline_pred": 24.488,
+      "calibrated_pred": 22.451,
+      "baseline_err_pct": 16.06,
+      "calibrated_err_pct": 6.41,
+      "source": "transition_copper_post_transition.json"
+    },
+    {
+      "model": "copper",
+      "N": 2560,
+      "nnei": 120,
+      "real_ms": 25.0562,
+      "mlp_ms": 5.5902,
+      "baseline_pred": 28.922,
+      "calibrated_pred": 26.189,
+      "baseline_err_pct": 15.43,
+      "calibrated_err_pct": 4.52,
+      "source": "transition_copper_post_transition.json"
+    },
+    {
+      "model": "copper",
+      "N": 3072,
+      "nnei": 120,
+      "real_ms": 33.3455,
+      "mlp_ms": 6.3791,
+      "baseline_pred": 39.351,
+      "calibrated_pred": 34.944,
+      "baseline_err_pct": 18.01,
+      "calibrated_err_pct": 4.79,
+      "source": "transition_copper_post_transition.json"
+    },
+    {
+      "model": "copper",
+      "N": 4096,
+      "nnei": 120,
+      "real_ms": 54.2261,
+      "mlp_ms": 8.1421,
+      "baseline_pred": 65.368,
+      "calibrated_pred": 56.488,
+      "baseline_err_pct": 20.55,
+      "calibrated_err_pct": 4.17,
+      "source": "copper.json"
+    },
+    {
+      "model": "copper",
+      "N": 8192,
+      "nnei": 120,
+      "real_ms": 193.9605,
+      "mlp_ms": 15.2007,
+      "baseline_pred": 235.76,
+      "calibrated_pred": 193.96,
+      "baseline_err_pct": 21.55,
+      "calibrated_err_pct": -0.0,
+      "source": "copper.json"
+    },
+    {
+      "model": "water",
+      "N": 32,
+      "nnei": 138,
+      "real_ms": 8.3166,
+      "mlp_ms": 1.2922,
+      "baseline_pred": 5.715,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -31.28,
+      "calibrated_err_pct": -0.12,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 64,
+      "nnei": 138,
+      "real_ms": 7.9514,
+      "mlp_ms": 1.33,
+      "baseline_pred": 5.715,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -28.13,
+      "calibrated_err_pct": 4.47,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 128,
+      "nnei": 138,
+      "real_ms": 7.9871,
+      "mlp_ms": 1.6131,
+      "baseline_pred": 5.715,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -28.45,
+      "calibrated_err_pct": 4.0,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 256,
+      "nnei": 138,
+      "real_ms": 8.1856,
+      "mlp_ms": 2.0609,
+      "baseline_pred": 5.715,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -30.18,
+      "calibrated_err_pct": 1.48,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 512,
+      "nnei": 138,
+      "real_ms": 8.3066,
+      "mlp_ms": 2.5346,
+      "baseline_pred": 5.715,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -31.2,
+      "calibrated_err_pct": -0.0,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 640,
+      "nnei": 138,
+      "real_ms": 8.7266,
+      "mlp_ms": 2.8079,
+      "baseline_pred": 5.715,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -34.51,
+      "calibrated_err_pct": -4.81,
+      "source": "transition_water_pre_transition.json"
+    },
+    {
+      "model": "water",
+      "N": 768,
+      "nnei": 138,
+      "real_ms": 8.723,
+      "mlp_ms": 3.0373,
+      "baseline_pred": 5.802,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -33.48,
+      "calibrated_err_pct": -4.77,
+      "source": "transition_water_pre_transition.json"
+    },
+    {
+      "model": "water",
+      "N": 896,
+      "nnei": 138,
+      "real_ms": 8.7799,
+      "mlp_ms": 3.3348,
+      "baseline_pred": 6.923,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -21.15,
+      "calibrated_err_pct": -5.39,
+      "source": "transition_water_pre_transition.json"
+    },
+    {
+      "model": "water",
+      "N": 1024,
+      "nnei": 138,
+      "real_ms": 8.6814,
+      "mlp_ms": 3.4736,
+      "baseline_pred": 7.989,
+      "calibrated_pred": 8.307,
+      "baseline_err_pct": -7.98,
+      "calibrated_err_pct": -4.32,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 1152,
+      "nnei": 138,
+      "real_ms": 9.7695,
+      "mlp_ms": 3.5698,
+      "baseline_pred": 9.116,
+      "calibrated_pred": 9.18,
+      "baseline_err_pct": -6.69,
+      "calibrated_err_pct": -6.03,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 1280,
+      "nnei": 138,
+      "real_ms": 10.8831,
+      "mlp_ms": 3.7632,
+      "baseline_pred": 10.444,
+      "calibrated_pred": 10.398,
+      "baseline_err_pct": -4.04,
+      "calibrated_err_pct": -4.46,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 1408,
+      "nnei": 138,
+      "real_ms": 12.2037,
+      "mlp_ms": 3.9413,
+      "baseline_pred": 11.86,
+      "calibrated_pred": 11.68,
+      "baseline_err_pct": -2.82,
+      "calibrated_err_pct": -4.29,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 1536,
+      "nnei": 138,
+      "real_ms": 13.4524,
+      "mlp_ms": 4.1054,
+      "baseline_pred": 13.365,
+      "calibrated_pred": 13.029,
+      "baseline_err_pct": -0.65,
+      "calibrated_err_pct": -3.15,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 1664,
+      "nnei": 138,
+      "real_ms": 14.8862,
+      "mlp_ms": 4.3028,
+      "baseline_pred": 15.008,
+      "calibrated_pred": 14.491,
+      "baseline_err_pct": 0.82,
+      "calibrated_err_pct": -2.66,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 1792,
+      "nnei": 138,
+      "real_ms": 16.3899,
+      "mlp_ms": 4.6541,
+      "baseline_pred": 16.908,
+      "calibrated_pred": 16.187,
+      "baseline_err_pct": 3.16,
+      "calibrated_err_pct": -1.24,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 1920,
+      "nnei": 138,
+      "real_ms": 18.0211,
+      "mlp_ms": 4.8381,
+      "baseline_pred": 18.745,
+      "calibrated_pred": 17.796,
+      "baseline_err_pct": 4.01,
+      "calibrated_err_pct": -1.25,
+      "source": "transition_water_1024_2048_step128.json"
+    },
+    {
+      "model": "water",
+      "N": 2048,
+      "nnei": 138,
+      "real_ms": 19.5975,
+      "mlp_ms": 4.9684,
+      "baseline_pred": 20.631,
+      "calibrated_pred": 19.431,
+      "baseline_err_pct": 5.27,
+      "calibrated_err_pct": -0.85,
+      "source": "water_small.json"
+    },
+    {
+      "model": "water",
+      "N": 2304,
+      "nnei": 138,
+      "real_ms": 23.2168,
+      "mlp_ms": 5.3545,
+      "baseline_pred": 24.84,
+      "calibrated_pred": 23.068,
+      "baseline_err_pct": 6.99,
+      "calibrated_err_pct": -0.64,
+      "source": "transition_water_post_transition.json"
+    },
+    {
+      "model": "water",
+      "N": 2560,
+      "nnei": 138,
+      "real_ms": 27.1959,
+      "mlp_ms": 5.5902,
+      "baseline_pred": 29.313,
+      "calibrated_pred": 26.874,
+      "baseline_err_pct": 7.79,
+      "calibrated_err_pct": -1.18,
+      "source": "transition_water_post_transition.json"
+    },
+    {
+      "model": "water",
+      "N": 3072,
+      "nnei": 138,
+      "real_ms": 36.0221,
+      "mlp_ms": 6.3791,
+      "baseline_pred": 39.82,
+      "calibrated_pred": 35.767,
+      "baseline_err_pct": 10.54,
+      "calibrated_err_pct": -0.71,
+      "source": "transition_water_post_transition.json"
+    },
+    {
+      "model": "water",
+      "N": 4096,
+      "nnei": 138,
+      "real_ms": 57.5844,
+      "mlp_ms": 8.1421,
+      "baseline_pred": 65.994,
+      "calibrated_pred": 57.584,
+      "baseline_err_pct": 14.6,
+      "calibrated_err_pct": -0.0,
+      "source": "water_large.json"
+    },
+    {
+      "model": "water",
+      "N": 8192,
+      "nnei": 138,
+      "real_ms": 200.5813,
+      "mlp_ms": 15.2007,
+      "baseline_pred": 237.012,
+      "calibrated_pred": 196.154,
+      "baseline_err_pct": 18.16,
+      "calibrated_err_pct": -2.21,
+      "source": "water_large.json"
+    }
+  ]
+}

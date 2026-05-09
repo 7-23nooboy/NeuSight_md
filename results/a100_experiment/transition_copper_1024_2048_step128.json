@@ -1,0 +1,145 @@
+{
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "device_config": "NVIDIA_A100_80GB_PCIe.json",
+  "model_config": "copper_se_e2_a.json",
+  "type_map": [
+    "Cu"
+  ],
+  "descriptor_sel": [
+    120
+  ],
+  "results": [
+    {
+      "num_atoms": 1024,
+      "real_mean_ms": 7.558,
+      "real_median_ms": 7.52,
+      "real_std_ms": 0.1051,
+      "real_p5_ms": 7.4512,
+      "real_p95_ms": 7.7152,
+      "pred_force_total_ms": 7.8326,
+      "pred_force_compute_ms": 3.4736,
+      "pred_force_overhead_ms": 4.359,
+      "pred_force_confidence": "low",
+      "pred_force_bounds_ms": [
+        6.98,
+        8.68
+      ],
+      "error_force_pct": 3.63
+    },
+    {
+      "num_atoms": 1152,
+      "real_mean_ms": 8.5051,
+      "real_median_ms": 8.4574,
+      "real_std_ms": 0.0949,
+      "real_p5_ms": 8.4096,
+      "real_p95_ms": 8.6588,
+      "pred_force_total_ms": 8.9399,
+      "pred_force_compute_ms": 3.5698,
+      "pred_force_overhead_ms": 5.3701,
+      "pred_force_confidence": "low",
+      "pred_force_bounds_ms": [
+        8.21,
+        9.67
+      ],
+      "error_force_pct": 5.11
+    },
+    {
+      "num_atoms": 1280,
+      "real_mean_ms": 9.662,
+      "real_median_ms": 9.6666,
+      "real_std_ms": 0.1007,
+      "real_p5_ms": 9.536,
+      "real_p95_ms": 9.7969,
+      "pred_force_total_ms": 10.2481,
+      "pred_force_compute_ms": 3.7632,
+      "pred_force_overhead_ms": 6.4849,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 6.07
+    },
+    {
+      "num_atoms": 1408,
+      "real_mean_ms": 10.7976,
+      "real_median_ms": 10.7744,
+      "real_std_ms": 0.1017,
+      "real_p5_ms": 10.6759,
+      "real_p95_ms": 10.9317,
+      "pred_force_total_ms": 11.6446,
+      "pred_force_compute_ms": 3.9413,
+      "pred_force_overhead_ms": 7.7033,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 7.84
+    },
+    {
+      "num_atoms": 1536,
+      "real_mean_ms": 11.9769,
+      "real_median_ms": 11.9374,
+      "real_std_ms": 0.0959,
+      "real_p5_ms": 11.8677,
+      "real_p95_ms": 12.1195,
+      "pred_force_total_ms": 13.1307,
+      "pred_force_compute_ms": 4.1054,
+      "pred_force_overhead_ms": 9.0253,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 9.63
+    },
+    {
+      "num_atoms": 1664,
+      "real_mean_ms": 13.3094,
+      "real_median_ms": 13.3249,
+      "real_std_ms": 0.1015,
+      "real_p5_ms": 13.1784,
+      "real_p95_ms": 13.4375,
+      "pred_force_total_ms": 14.7538,
+      "pred_force_compute_ms": 4.3028,
+      "pred_force_overhead_ms": 10.451,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 10.85
+    },
+    {
+      "num_atoms": 1792,
+      "real_mean_ms": 14.6616,
+      "real_median_ms": 14.6538,
+      "real_std_ms": 0.0925,
+      "real_p5_ms": 14.5509,
+      "real_p95_ms": 14.8053,
+      "pred_force_total_ms": 16.6343,
+      "pred_force_compute_ms": 4.6541,
+      "pred_force_overhead_ms": 11.9802,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 13.45
+    },
+    {
+      "num_atoms": 1920,
+      "real_mean_ms": 16.2376,
+      "real_median_ms": 16.2236,
+      "real_std_ms": 0.1056,
+      "real_p5_ms": 16.0926,
+      "real_p95_ms": 16.414,
+      "pred_force_total_ms": 18.4512,
+      "pred_force_compute_ms": 4.8381,
+      "pred_force_overhead_ms": 13.6131,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 13.63
+    },
+    {
+      "num_atoms": 2048,
+      "real_mean_ms": 17.7719,
+      "real_median_ms": 17.7854,
+      "real_std_ms": 0.1002,
+      "real_p5_ms": 17.6342,
+      "real_p95_ms": 17.9251,
+      "pred_force_total_ms": 20.318,
+      "pred_force_compute_ms": 4.9684,
+      "pred_force_overhead_ms": 15.3496,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "error_force_pct": 14.33
+    }
+  ]
+}

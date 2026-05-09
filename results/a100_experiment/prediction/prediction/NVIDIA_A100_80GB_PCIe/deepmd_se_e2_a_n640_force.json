@@ -1,0 +1,32 @@
+{
+    "model_type": "se_e2_a",
+    "num_atoms": 640,
+    "compute_force": true,
+    "e2e_latency": 5.865,
+    "compute_latency": 2.8079,
+    "fw_latency": 2.8079268611776858,
+    "bw_latency": 0.0,
+    "bwall_latency": 0.0,
+    "acc_latency": 0.0,
+    "overhead": {
+        "total_ms": 3.0571,
+        "kernel_launch_ms": 1.9737,
+        "cpu_dispatch_ms": 5.865,
+        "autograd_ms": 0.15,
+        "cpu_scale": 1.0,
+        "gpu_scale": 1.7726,
+        "density_correction": 1.0
+    },
+    "kernel_count": {
+        "modeled": 91,
+        "framework": 296,
+        "total": 387
+    },
+    "confidence": {
+        "level": "low",
+        "regime": "transition",
+        "transition_ratio": 0.8274,
+        "e2e_lower_ms": 5.0566,
+        "e2e_upper_ms": 6.6734
+    }
+}

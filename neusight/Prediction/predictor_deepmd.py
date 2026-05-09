@@ -31,7 +31,7 @@ class DeepMDPredictor:
     - 聚合使用简单求和（无 Transformer 层复制）
     """
 
-    def __init__(self, predictor_path, tile_dataset_dir):
+    def __init__(self, predictor_path, tile_dataset_dir, calibration_path=None):
         if tile_dataset_dir != "":
             tile_dataset_dir = Path(tile_dataset_dir)
 
@@ -41,8 +41,14 @@ class DeepMDPredictor:
         )
 
         # Overhead 模型 — 预测 kernel launch / CPU dispatch / autograd 开销
-        calib_path = load_calibration("")
-        self.overhead_model = DeepMDOverheadModel(calibration_path=calib_path)
+        # 优先级: 显式传入 calibration_path > NEUSIGHT_DEEPMD_CALIBRATION 环境变量
+        #         > load_calibration() 默认搜索 (kernel_launch_cost.json)
+        if calibration_path is None:
+            import os
+            calibration_path = os.environ.get("NEUSIGHT_DEEPMD_CALIBRATION")
+        if calibration_path is None:
+            calibration_path = load_calibration("")
+        self.overhead_model = DeepMDOverheadModel(calibration_path=calibration_path)
 
     def predict(
         self,
@@ -190,6 +196,8 @@ class DeepMDPredictor:
                 "total_ms": overhead["total_overhead_ms"],
                 "kernel_launch_ms": overhead["kernel_launch_ms"],
                 "cpu_dispatch_ms": overhead["cpu_dispatch_ms"],
+                "fixed_overhead_ms": overhead.get("fixed_overhead_ms", overhead["cpu_dispatch_ms"]),
+                "gpu_overhead_roofline_ms": overhead.get("unmodeled_compute_ms", 0.0),
                 "autograd_ms": overhead["autograd_ms"],
                 "cpu_scale": overhead.get("cpu_scale", 1.0),
                 "gpu_scale": overhead.get("gpu_scale", 1.0),

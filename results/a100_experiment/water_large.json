@@ -1,0 +1,45 @@
+{
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "device_config": "NVIDIA_A100_80GB_PCIe.json",
+  "model_config": "water_se_e2_a.json",
+  "type_map": [
+    "O",
+    "H"
+  ],
+  "descriptor_sel": [
+    46,
+    92
+  ],
+  "results": [
+    {
+      "num_atoms": 4096,
+      "real_mean_ms": 57.5844,
+      "real_median_ms": 57.5243,
+      "real_std_ms": 0.2344,
+      "real_p5_ms": 57.3199,
+      "real_p95_ms": 57.9741,
+      "pred_force_total_ms": 65.994,
+      "pred_force_compute_ms": 8.1421,
+      "pred_force_overhead_ms": 57.8519,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "pred_energy_total_ms": 62.7289,
+      "error_force_pct": 14.6
+    },
+    {
+      "num_atoms": 8192,
+      "real_mean_ms": 200.5813,
+      "real_median_ms": 200.5647,
+      "real_std_ms": 0.3628,
+      "real_p5_ms": 200.1256,
+      "real_p95_ms": 201.1699,
+      "pred_force_total_ms": 237.0116,
+      "pred_force_compute_ms": 15.2007,
+      "pred_force_overhead_ms": 221.8109,
+      "pred_force_confidence": "high",
+      "pred_force_bounds_ms": null,
+      "pred_energy_total_ms": 231.1971,
+      "error_force_pct": 18.16
+    }
+  ]
+}

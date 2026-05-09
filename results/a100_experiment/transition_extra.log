@@ -1,0 +1,23 @@
+
+### water_pre_transition  atoms=[640, 768, 896]
+To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+  N= 640  meas=8.727ms (std=0.242)  pred=5.865ms conf=low  err=-32.79%
+  N= 768  meas=8.723ms (std=0.236)  pred=5.865ms conf=low  err=-32.76%
+  N= 896  meas=8.780ms (std=0.339)  pred=6.9231ms conf=low  err=-21.15%
+saved /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/transition_water_pre_transition.json
+
+### copper_floor  atoms=[32, 64, 128, 256, 512, 768, 896]
+  N=  32  meas=6.716ms (std=0.264)  pred=5.0ms conf=high  err=-25.55%
+  N=  64  meas=6.801ms (std=0.239)  pred=5.0ms conf=high  err=-26.48%
+  N= 128  meas=6.856ms (std=0.320)  pred=5.0ms conf=high  err=-27.07%
+  N= 256  meas=6.895ms (std=0.247)  pred=5.0ms conf=high  err=-27.49%
+  N= 512  meas=7.037ms (std=0.278)  pred=5.0ms conf=high  err=-28.95%
+  N= 768  meas=6.910ms (std=0.204)  pred=5.6848ms conf=low  err=-17.73%
+  N= 896  meas=6.972ms (std=0.269)  pred=6.7862ms conf=low  err=-2.67%
+saved /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/transition_copper_floor.json
+
+### copper_post_transition  atoms=[2304, 2560, 3072]
+  N=2304  meas=21.099ms (std=0.101)  pred=24.488ms conf=high  err=+16.06%
+  N=2560  meas=25.056ms (std=0.108)  pred=28.922ms conf=high  err=+15.43%
+  N=3072  meas=33.345ms (std=0.107)  pred=39.3511ms conf=high  err=+18.01%
+saved /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/transition_copper_post_transition.json

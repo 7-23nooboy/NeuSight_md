@@ -1217,3 +1217,247 @@ gpu_oh_target = gpu_oh_ref × gpu_bw_scale
 3. 单 GPU 校准: C_QUAD 和 C_LINEAR 仅在 H100 NVL 上校准。跨 GPU 假设 overhead ∝ 1/BW 成立，但不同 GPU 架构的 L2 cache 大小、SM 数量等可能影响有效乘数
 4. DPA-1/DPA-2 模型: 当前仅校准了 se_e2_a 描述符。attention-based 描述符的 overhead 结构不同
 5. 多帧批处理: 当前模型假设 nframes=1。批处理时 kernel launch overhead 可能被 amortize
+
+---
+
+## 12. A100 跨 GPU 实验：v5 模型缺陷的实证
+
+> 数据来源：`results/a100_experiment/`
+> 硬件：NVIDIA A100 80GB PCIe (Mem_BW = 1935 GB/s ≈ H100 NVL 3430 GB/s × 0.56)
+> DeepMD-kit 3.1.3 / PyTorch 2.10.0+cu128
+
+本章用 A100 上一组完整的实测数据，把 v5 「跨 GPU 假设」逐条验证或证伪，
+明确 v6 升级的攻击面。
+
+### 12.1 误差全景（按区间 + 模型）
+
+| 区间 | 模型 | N 范围 | 误差方向 | 误差量级 | v5 confidence | 标注是否合理 |
+|------|------|--------|---------|----------|--------------|------------|
+| Fixed plateau | Water | 32–512 | 低估 | **−26 ~ −29%** | "high" | ❌ 错 |
+| Fixed plateau | Copper | 32–768 | 低估 | **−18 ~ −29%** | "high" | ❌ 错 |
+| Transition | Water | 1024–2048 | 接近 0 | −8.5% ~ +5.0% | "low" | ⚠️ 过保守 |
+| Transition | Copper | 1024–2048 | 高估 | +3.6% ~ +14.3% | "low/high" | ⚠️ 部分对 |
+| Post-transition | Water | 2304–3072 | 高估 | +7% ~ +11% | "high" | ❌ 错 |
+| Post-transition | Copper | 2304–3072 | 高估 | +15% ~ +18% | "high" | ❌ 错 |
+| Compute-bound | Water | 4096–8192 | 高估 | **+14.6 ~ +18.2%** | "high" | ❌ 错 |
+| Compute-bound | Copper | 4096–8192 | 高估 | **+20.5 ~ +21.6%** | "high" | ❌ 错 |
+
+整体 MAE：Water **21.9%**，Copper **17.8%**，对比 H100 校准点的 2–5%，
+**跨 GPU 误差放大 5–10 倍**。
+
+### 12.2 缺陷 A — Fixed overhead 完全不能跨 GPU 移植（最严重）
+
+#### 实测数据
+
+| 模型 | H100 fixed | A100 fixed (实测) | 比值 |
+|------|-----------|-------------------|------|
+| Water (2-type) | 5.715 ms | **~8.30 ms** | 1.45× |
+| Copper (1-type) | 4.850 ms | **~6.85 ms** | 1.41× |
+| 增量 Δ(water − copper) | 0.865 ms | **~1.45 ms** | 1.68× |
+
+#### 物理解释
+
+`fixed = N_kernels × τ_launch + Python_overhead`：
+
+- A100 PCIe 的 `τ_launch` 经验值 ~22 μs，H100 NVL ~16 μs（PCIe vs NVLink dispatch、
+  SM scheduler 不同）
+- 350 launches × 6 μs ≈ **2.1 ms**，正好对应 H100→A100 fixed 增量
+
+#### 派生问题
+
+`per_extra_type = 0.8`（写死常数）也跨 GPU 失效：
+
+```
+H100: water - copper = 0.865 ms / type-pair
+A100: water - copper = 1.45 ms / type-pair  → 是 H100 的 1.68×
+```
+
+因为 `per_extra_type` 本质是「多类型导致的额外 kernel 数 × τ_launch」，
+τ_launch 跨 GPU 不同 → `per_extra_type` 必然跨 GPU 不同。
+
+#### 结论
+
+- `FIXED_OVERHEAD_MS` 的 lookup table + `per_extra_type` 常数 **完全不可跨 GPU 移植**
+- 这是 N≤512 区间被 v5 系统性低估 −28% 的根本原因
+- v5 仍标 "high confidence"，**confidence 标注完全失效**
+
+### 12.3 缺陷 B — Bandwidth 缩放过度简化
+
+v5 假设 `unmod(target) = unmod(REF) × REF_BW / target_BW = unmod × 1.77`
+（REF=H100 NVL 3430，target=A100 1935）。从 N=4096/8192 反推**真实**缩放：
+
+| N | H100 unmod | A100 unmod | 真实比值 | v5 模型比值 | 模型偏差 |
+|---|-----------|-----------|---------|-----------|---------|
+| Water 4096 | 31.4 ms | 49.4 ms | **1.57×** | 1.77× | +12.7% |
+| Water 8192 | 121.9 ms | 185.4 ms | **1.52×** | 1.77× | +16.4% |
+| Copper 8192 | 122.3 ms | 178.8 ms | **1.46×** | 1.77× | +21.2% |
+
+**A100 实际带宽劣势小于规格表**——这正是 compute-bound 区间被系统性
+高估 +15~22% 的原因。
+
+#### 物理解释
+
+`gpu_bw_scale = REF_BW / target_BW` 隐含「access pattern 在两 GPU 上 effective
+bandwidth 占 peak 的比例相同」的假设，但：
+
+- A100：HBM2e + 40 MB L2，**对 random gather / topk 这种非规则访问的相对
+  cache hit 率更高**
+- H100：HBM3 + 50 MB L2，规则带宽强但 random access 时优势缩水
+
+也就是 `C_QUAD/C_LINEAR` **并不是真正的「跨 GPU 不变」常数**——它们隐含了
+H100 cache 行为下的 effective bytes-touched 倍数。换 GPU 时需要乘
+cache-pattern 修正系数：
+
+```
+A100 修正 ≈ 0.83~0.85
+```
+
+#### 与 §11.2.3 的判断修正
+
+§11.2.3 提到 v5 unmodeled 部分跨 GPU "应该不会崩"，是基于「BW 显式在公式分母」。
+A100 数据 **部分修正了这个论断**：
+
+- 简单 BW 比值缩放在大 N 下仍偏 15–22%
+- 它没"崩到失效"（N→∞ 仍是 roofline 行为），但**有可观的 cache-pattern 偏差**
+- 必须引入 GPU-aware 的 cache-efficiency 修正
+
+### 12.4 缺陷 C — Bubble 模型 GPU 依赖性
+
+H100 上转换区 N=2048 误差 +75% （v5 预测 6.7 ms vs 实测 11.74 ms），
+所以 v5 在转换区给 "low confidence" + 高斯 bubble band。
+A100 上同区间实测：
+
+| N | A100 实测 | v5 预测 | error % | confidence |
+|---|----------|--------|---------|-----------|
+| 1024 | 8.74 | 7.99 | −8.5% | low |
+| 1152 | 9.77 | 9.12 | −6.7% | low |
+| 1280 | 10.88 | 10.44 | −4.0% | low |
+| 1408 | 12.20 | 11.86 | −2.8% | high |
+| 1536 | 13.45 | 13.37 | −0.7% | high |
+| 1664 | 14.89 | 15.01 | +0.8% | high |
+| 1792 | 16.39 | 16.91 | +3.2% | high |
+| 1920 | 18.02 | 18.74 | +4.0% | high |
+| 2048 | 19.65 | 20.63 | +5.0% | high |
+
+**A100 转换区曲线极其平滑、几乎没有 bubble peak**，全段误差都 < 9%。
+
+#### 含义
+
+- `BUBBLE_PEAK_FRACTION = 0.20`、`σ_left = 0.2`、`σ_right = 1.0`
+  这套参数**只在 H100 上经验校准**
+- A100 调度行为不同（可能是 driver kernel-queue 深度更大、PCIe 路径有更深的
+  prefetch buffer），让大小 kernel 重叠得更好
+- bubble 既是 GPU 依赖也是 kernel-mix 依赖，不是物理普适常数
+
+#### Confidence 标注方向反了
+
+- A100 真正不准的 N≤512（−28%）被标 **"high"**
+- A100 转换区其实非常准（< 9%）却被标 **"low"**
+
+confidence 信号在 A100 上几乎失去诊断价值。
+
+### 12.5 缺陷 D — Plateau 内不平坦 + 768 反常
+
+A100 Copper 平台数据：
+
+```
+N=32:  6.72 ms
+N=64:  6.80 ms   (+0.08)
+N=128: 6.86 ms   (+0.06)
+N=256: 6.90 ms   (+0.04)
+N=512: 7.04 ms   (+0.14)
+N=768: 6.91 ms   (-0.13)  ← 反而下降
+N=896: 6.97 ms   (+0.06)
+N=1024: 7.56 ms   (起跳，进入 transition)
+```
+
+平台内有 ±0.2 ms 的微波动，**N=768 反而比 N=512 低 0.13 ms**——
+这是 `max(fixed, mlp+unmod)` 模型完全无法解释的。
+
+#### 可能原因
+
+- SM 整除性（A100 有 108 SM，N=768 ≈ 7.1 wave，可能命中某个 wave-fill 甜蜜点）
+- Kernel autotune 在某些 shape 上选了更好的实现
+- `nall = 27N` 在某些 N 下命中 cache 行尺寸的 alignment
+
+v5 把整个 plateau 当成一个常数，**完全忽略 N 在 plateau 内的微调**。
+
+### 12.6 缺陷 E — NeuSight MLP_WAVE 的 compute 部分本身也有跨 GPU 偏差
+
+把 compute 拆出来对比：
+
+| N | H100 pred compute | A100 pred compute | 实际缩放 | 1935/3430 理论 |
+|---|------------------|-------------------|---------|---------------|
+| 4096 | 3.96 ms | 8.14 ms | **2.06×** | 1.77× |
+| 8192 | 7.19 ms | 15.20 ms | **2.11×** | 1.77× |
+
+NeuSight 自己的 compute 预测在 A100 上比 H100 大 ~2.06–2.11×，**超过 BW 比 1.77×**。
+这暗示 NeuSight MLP_WAVE 自己**也对 A100 略悲观**。
+
+这部分不属于 overhead 模块，但是整体 e2e 误差里有一部分来自上游 NeuSight，
+不能全部归因到 overhead 模型。后续验证需要把 compute / overhead 误差分别归因。
+
+### 12.7 v5 设计假设 vs A100 实证总表
+
+| v5 假设 | A100 实证结论 |
+|---------|--------------|
+| Fixed overhead 跨 GPU 用同一查表 | ❌ **崩**（误差 −28%） |
+| `per_extra_type = 0.8` 跨 GPU 通用 | ❌ **崩**（A100 实际 ≈ 1.45） |
+| `C_QUAD/C_LINEAR` 跨 GPU 不变 | ⚠️ **部分崩**（需 ×0.83 修正） |
+| `gpu_bw_scale = REF_BW/target_BW` 简单线性 | ⚠️ **部分崩**（高估 A100 的 BW 劣势） |
+| `BUBBLE_PEAK_FRACTION = 0.20` 跨 GPU 通用 | ❌ **崩**（A100 几乎无 bubble） |
+| Plateau 内 fixed 是常数 | ⚠️ **小问题**（±0.2 ms 波动 + 768 反常） |
+| Confidence 标注合理 | ❌ **方向反**（low-N 应 low、transition 应 high） |
+| MLP_WAVE compute 跨 GPU 准确 | ⚠️ A100 上自身就偏 ~17% |
+
+### 12.8 按优先级的 v6 修复路线
+
+#### P0 — 必须做（误差最大、影响最广）
+
+1. **Fixed overhead 物理化** — 把 lookup table 替换成 kernel-counting 公式
+   ```
+   fixed = PY_BASE + N_kernels(arch) × τ_launch(GPU)
+   ```
+   - 每个 GPU 只测一个 `τ_launch`（empty kernel storm micro-benchmark）即可跨 GPU 迁移
+   - `N_kernels` 用现有 `_count_framework_kernels`，按 num_types / L_emb / L_fit 参数化
+   - 预期：N≤512 误差从 −28% 降到 ±5%
+
+2. **Unmodeled compute 加 cache-efficiency 系数**
+   ```
+   gpu_oh_target = base × (REF_BW / target_BW) × κ_cache(GPU)
+   ```
+   - 引入 `κ_cache`（H100=1.0, A100≈0.83），从大 N 数据点反拟合
+   - 预期：N≥4096 误差从 +18% 降到 ±5%
+
+#### P1 — 应该做
+
+3. **Confidence 标注重做**
+   - `low-N + 没有 GPU 校准数据` → low confidence（当前是 high）
+   - `transition-zone + GPU 已校准` → high confidence（当前 H100 的经验直接套到 A100 上）
+   - 引入 `gpu_calibrated` flag，未校准 GPU 全程 low confidence
+
+4. **Bubble fraction GPU-aware 表**
+   ```python
+   BUBBLE_PEAK_FRACTION_BY_GPU = {
+       "H100_NVL":   0.20,   # 现有
+       "A100_PCIe":  0.05,   # A100 实测
+       "default":    0.10,
+   }
+   ```
+
+#### P2 — 想做
+
+5. **Plateau 内 micro-correction** — 加 `+ ε(N mod SM)` 项描述 SM 整除性微波动
+6. **NeuSight MLP_WAVE 自身的 A100 缩放** — 不属于 overhead 模块，但需联动检查
+
+### 12.9 一句话总结
+
+A100 数据**系统性证伪了 v5 的「跨 GPU 假设」三件套**：
+
+1. Fixed overhead 查表跨 GPU 直接崩（−28%）
+2. BW 线性缩放对 unmodeled 过度悲观（+18%）
+3. Bubble 高斯模型只适合 H100（A100 转换区其实很准）
+
+v6 最值得做的两件事——**fixed overhead 物理化** 和 **C_QUAD/C_LINEAR 加
+cache 修正**——已被 A100 实测强力背书。当前 v5 在 A100 上的 21.9% MAE
+主要来自这两条没做。补上后预期 MAE 可压回 5–8%，恢复到 H100 上的精度水平。

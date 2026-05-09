@@ -1,0 +1,81 @@
+{
+  "unmodeled_alpha": 7.513510755255593e-06,
+  "unmodeled_beta": 1.8379492042730547,
+  "r_squared": 0.9964285055505746,
+  "old_alpha": 2.14e-05,
+  "old_beta": 1.708,
+  "calibration_points": [
+    {
+      "model": "water",
+      "N": 2048,
+      "real_ms": 11.742,
+      "compute_ms": 2.1724,
+      "unmodeled_ms": 9.569600000000001
+    },
+    {
+      "model": "water",
+      "N": 4096,
+      "real_ms": 35.236,
+      "compute_ms": 3.8343,
+      "unmodeled_ms": 31.401699999999998
+    },
+    {
+      "model": "copper",
+      "N": 2048,
+      "real_ms": 11.332,
+      "compute_ms": 2.1724,
+      "unmodeled_ms": 9.159600000000001
+    },
+    {
+      "model": "copper",
+      "N": 4096,
+      "real_ms": 35.128,
+      "compute_ms": 3.8343,
+      "unmodeled_ms": 31.2937
+    },
+    {
+      "model": "copper",
+      "N": 8192,
+      "real_ms": 129.528,
+      "compute_ms": 7.2279,
+      "unmodeled_ms": 122.30009999999999
+    }
+  ],
+  "residuals": [
+    {
+      "model": "water",
+      "N": 2048,
+      "real_unmodeled_ms": 9.5696,
+      "pred_unmodeled_ms": 9.1601,
+      "error_pct": -4.3
+    },
+    {
+      "model": "water",
+      "N": 4096,
+      "real_unmodeled_ms": 31.4017,
+      "pred_unmodeled_ms": 32.7474,
+      "error_pct": 4.3
+    },
+    {
+      "model": "copper",
+      "N": 2048,
+      "real_unmodeled_ms": 9.1596,
+      "pred_unmodeled_ms": 9.1601,
+      "error_pct": 0.0
+    },
+    {
+      "model": "copper",
+      "N": 4096,
+      "real_unmodeled_ms": 31.2937,
+      "pred_unmodeled_ms": 32.7474,
+      "error_pct": 4.6
+    },
+    {
+      "model": "copper",
+      "N": 8192,
+      "real_unmodeled_ms": 122.3001,
+      "pred_unmodeled_ms": 117.0725,
+      "error_pct": -4.3
+    }
+  ]
+}

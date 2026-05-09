@@ -1,0 +1,66 @@
+{
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "device_config": "NVIDIA_A100_80GB_PCIe.json",
+  "model_config": "water_se_e2_a.json",
+  "type_map": [
+    "O",
+    "H"
+  ],
+  "descriptor_sel": [
+    46,
+    92
+  ],
+  "results": [
+    {
+      "num_atoms": 640,
+      "real_mean_ms": 8.7266,
+      "real_median_ms": 8.7103,
+      "real_std_ms": 0.2423,
+      "real_p5_ms": 8.3777,
+      "real_p95_ms": 9.0903,
+      "pred_force_total_ms": 5.865,
+      "pred_force_compute_ms": 2.8079,
+      "pred_force_overhead_ms": 3.0571,
+      "pred_force_confidence": "low",
+      "pred_force_bounds_ms": [
+        5.06,
+        6.67
+      ],
+      "error_force_pct": -32.79
+    },
+    {
+      "num_atoms": 768,
+      "real_mean_ms": 8.723,
+      "real_median_ms": 8.7347,
+      "real_std_ms": 0.236,
+      "real_p5_ms": 8.385,
+      "real_p95_ms": 9.1114,
+      "pred_force_total_ms": 5.865,
+      "pred_force_compute_ms": 3.0373,
+      "pred_force_overhead_ms": 2.8277,
+      "pred_force_confidence": "low",
+      "pred_force_bounds_ms": [
+        4.69,
+        7.04
+      ],
+      "error_force_pct": -32.76
+    },
+    {
+      "num_atoms": 896,
+      "real_mean_ms": 8.7799,
+      "real_median_ms": 8.7572,
+      "real_std_ms": 0.3395,
+      "real_p5_ms": 8.3289,
+      "real_p95_ms": 9.1565,
+      "pred_force_total_ms": 6.9231,
+      "pred_force_compute_ms": 3.3348,
+      "pred_force_overhead_ms": 3.5883,
+      "pred_force_confidence": "low",
+      "pred_force_bounds_ms": [
+        5.77,
+        8.08
+      ],
+      "error_force_pct": -21.15
+    }
+  ]
+}

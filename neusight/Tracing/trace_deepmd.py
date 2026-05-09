@@ -273,20 +273,46 @@ def _build_embedding_net_ops(N, sel, neuron, activation="tanh",
                     (N, 4 * ng),
                 ))
     else:
-        # ntypes^2 个网络 (type_one_side=False) — 较少使用
-        # 简化: 合并为一个大网络
-        M = sum(sel)
-        batch = N * M
-        ops.extend(_build_single_embedding_net_ops(
-            "emb", batch, neuron, activation
-        ))
-        # 单次 matmul
-        ops.append(_op(
-            "emb_matmul", "BMM",
-            [("BMM", (N, 4, M, ng))],
-            [(N, M, 4), (N, M, ng)],
-            (N, 4, ng),
-        ))
+        # ntypes^2 个独立 embedding net (type_one_side=False)
+        # 源码: se_a.py L789-836 双层循环 (ti=center, tj=neighbor)
+        #   for ti in range(ntypes):
+        #     for tj in range(ntypes):
+        #       rr = dmatrix[mask_ti, sec[tj]:sec[tj+1], :]
+        #       gg = filter_layers[ti][tj].forward(rr[:,:,:1])
+        #       gr = matmul(rr.permute(0,2,1), gg)
+        #       xyz_scatter[mask_ti] += gr
+        #
+        # 实际 launch 时, 由于 mask + scatter 操作, 每个 (ti,tj) 子网仍按
+        # full N × sel[tj] 启动 (中心原子掩码在 GPU 上实现)。
+        # 这里按 full batch 建模, 与真实 kernel launch 数对齐。
+        accum_idx = 0
+        for ti in range(ntypes):
+            for tj in range(ntypes):
+                ni = sel[tj]
+                batch = N * ni
+
+                # (ti, tj) 子网 — 独立的 MLP filter
+                ops.extend(_build_single_embedding_net_ops(
+                    f"emb_t{ti}_n{tj}", batch, neuron, activation
+                ))
+
+                # per-pair matmul: [N, 4, ni] @ [N, ni, ng] -> [N, 4, ng]
+                ops.append(_op(
+                    f"emb_t{ti}_n{tj}_matmul", "BMM",
+                    [("BMM", (N, 4, ni, ng))],
+                    [(N, ni, 4), (N, ni, ng)],
+                    (N, 4, ng),
+                ))
+
+                # 累加 (除第一个外)
+                if accum_idx > 0:
+                    ops.append(_op(
+                        f"emb_t{ti}_n{tj}_accum", "VECadd",
+                        [("VECadd", (N, 4 * ng))],
+                        [(N, 4 * ng), (N, 4 * ng)],
+                        (N, 4 * ng),
+                    ))
+                accum_idx += 1
 
     return ops
 
@@ -531,29 +557,38 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
                     (batch, out_dim),
                 ))
     else:
-        M = sum(sel)
-        NM = N * M
-        ops.append(_op(
-            "emb_bw_matmul", "BMM",
-            [("BMM", (N, M, 4, ng))],
-            [(N, 4, ng)],
-            (N, M, ng),
-        ))
-        for i in range(len(emb_neuron) - 1, -1, -1):
-            out_dim = emb_neuron[i]
-            in_dim = 1 if i == 0 else emb_neuron[i - 1]
-            ops.append(_op(
-                f"emb_bw_input_{i}", "Linear",
-                [("Linear", (NM, out_dim, in_dim))],
-                [(NM, out_dim)],
-                (NM, in_dim),
-            ))
-            ops.append(_op(
-                f"emb_bw_act_{i}", "VECmul",
-                [("VECmul", (NM, out_dim))],
-                [(NM, out_dim), (NM, out_dim)],
-                (NM, out_dim),
-            ))
+        # type_one_side=False: ntypes^2 个独立 backward 路径,
+        # 与 forward 的 (ti, tj) 双层循环对称
+        ntypes_local = len(sel)
+        for ti in range(ntypes_local):
+            for tj in range(ntypes_local):
+                ni = sel[tj]
+                batch = N * ni
+
+                # backward of (ti,tj) matmul
+                ops.append(_op(
+                    f"emb_t{ti}_n{tj}_bw_matmul", "BMM",
+                    [("BMM", (N, ni, 4, ng))],
+                    [(N, 4, ng)],
+                    (N, ni, ng),
+                ))
+
+                # backward of (ti,tj) embedding MLP
+                for i in range(len(emb_neuron) - 1, -1, -1):
+                    out_dim = emb_neuron[i]
+                    in_dim = 1 if i == 0 else emb_neuron[i - 1]
+                    ops.append(_op(
+                        f"emb_t{ti}_n{tj}_bw_input_{i}", "Linear",
+                        [("Linear", (batch, out_dim, in_dim))],
+                        [(batch, out_dim)],
+                        (batch, in_dim),
+                    ))
+                    ops.append(_op(
+                        f"emb_t{ti}_n{tj}_bw_act_{i}", "VECmul",
+                        [("VECmul", (batch, out_dim))],
+                        [(batch, out_dim), (batch, out_dim)],
+                        (batch, out_dim),
+                    ))
 
     return ops
 

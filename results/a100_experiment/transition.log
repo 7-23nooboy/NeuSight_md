@@ -1,0 +1,31 @@
+To get the best performance, it is recommended to adjust the number of threads by setting the environment variables OMP_NUM_THREADS, DP_INTRA_OP_PARALLELISM_THREADS, and DP_INTER_OP_PARALLELISM_THREADS. See https://deepmd.rtfd.io/parallelism/ for more information.
+
+### water_1024_2048_step128  atoms=[1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048]
+  N=1024  meas=8.735ms (std=0.359)  pred=7.989ms conf=low  err=-8.54%
+  N=1152  meas=9.770ms (std=0.092)  pred=9.1159ms conf=low  err=-6.69%
+  N=1280  meas=10.883ms (std=0.092)  pred=10.4437ms conf=low  err=-4.04%
+  N=1408  meas=12.204ms (std=0.093)  pred=11.8597ms conf=high  err=-2.82%
+  N=1536  meas=13.452ms (std=0.094)  pred=13.3654ms conf=high  err=-0.65%
+  N=1664  meas=14.886ms (std=0.099)  pred=15.008ms conf=high  err=+0.82%
+  N=1792  meas=16.390ms (std=0.096)  pred=16.9081ms conf=high  err=+3.16%
+  N=1920  meas=18.021ms (std=0.094)  pred=18.7446ms conf=high  err=+4.01%
+  N=2048  meas=19.648ms (std=0.099)  pred=20.6309ms conf=high  err=+5.00%
+saved /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/transition_water_1024_2048_step128.json
+
+### water_post_transition  atoms=[2304, 2560, 3072]
+  N=2304  meas=23.217ms (std=0.108)  pred=24.84ms conf=high  err=+6.99%
+  N=2560  meas=27.196ms (std=0.099)  pred=29.3132ms conf=high  err=+7.79%
+  N=3072  meas=36.022ms (std=0.135)  pred=39.8205ms conf=high  err=+10.54%
+saved /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/transition_water_post_transition.json
+
+### copper_1024_2048_step128  atoms=[1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048]
+  N=1024  meas=7.558ms (std=0.105)  pred=7.8326ms conf=low  err=+3.63%
+  N=1152  meas=8.505ms (std=0.095)  pred=8.9399ms conf=low  err=+5.11%
+  N=1280  meas=9.662ms (std=0.101)  pred=10.2481ms conf=high  err=+6.07%
+  N=1408  meas=10.798ms (std=0.102)  pred=11.6446ms conf=high  err=+7.84%
+  N=1536  meas=11.977ms (std=0.096)  pred=13.1307ms conf=high  err=+9.63%
+  N=1664  meas=13.309ms (std=0.101)  pred=14.7538ms conf=high  err=+10.85%
+  N=1792  meas=14.662ms (std=0.092)  pred=16.6343ms conf=high  err=+13.45%
+  N=1920  meas=16.238ms (std=0.106)  pred=18.4512ms conf=high  err=+13.63%
+  N=2048  meas=17.772ms (std=0.100)  pred=20.318ms conf=high  err=+14.33%
+saved /home/azureuser/yuanzhwang/NeuSight_md/results/a100_experiment/transition_copper_1024_2048_step128.json

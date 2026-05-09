@@ -1,0 +1,74 @@
+{
+  "fixed_overhead_mode": "kernel_count",
+  "beta_driver": "modeled",
+  "alpha_fixed_ms": 2.000822,
+  "beta_per_kernel_ms": 0.02944444,
+  "gamma_force_ms": 0.15,
+  "fit_meta": {
+    "roofline": {
+      "n_points": 5,
+      "ref_mem_bw_gbps": 3430.0,
+      "residuals": [
+        {
+          "system": "copper",
+          "N": 4096,
+          "real_ms": 32.8484,
+          "fix_ms": 5.0668,
+          "cmp_ms": 3.3024,
+          "roof_obs_ms": 27.7816,
+          "roof_pred_ms": 31.12,
+          "e2e_pred_ms": 34.4224,
+          "e2e_err_pct": 4.79
+        },
+        {
+          "system": "water",
+          "N": 4096,
+          "real_ms": 36.574,
+          "fix_ms": 8.9563,
+          "cmp_ms": 3.9605,
+          "roof_obs_ms": 27.6177,
+          "roof_pred_ms": 31.3666,
+          "e2e_pred_ms": 35.3271,
+          "e2e_err_pct": -3.41
+        },
+        {
+          "system": "LiAlOCl",
+          "N": 4096,
+          "real_ms": 89.074,
+          "fix_ms": 22.9243,
+          "cmp_ms": 29.2979,
+          "roof_obs_ms": 59.7761,
+          "roof_pred_ms": 57.5268,
+          "e2e_pred_ms": 86.8247,
+          "e2e_err_pct": -2.53
+        },
+        {
+          "system": "he6",
+          "N": 4096,
+          "real_ms": 71.7214,
+          "fix_ms": 45.1443,
+          "cmp_ms": 9.0794,
+          "roof_obs_ms": 26.5771,
+          "roof_pred_ms": 36.0508,
+          "e2e_pred_ms": 45.1443,
+          "e2e_err_pct": -37.06
+        },
+        {
+          "system": "water_dpa1",
+          "N": 4096,
+          "real_ms": 53.4778,
+          "fix_ms": 8.8679,
+          "cmp_ms": 5.4673,
+          "roof_obs_ms": 44.6099,
+          "roof_pred_ms": 30.2983,
+          "e2e_pred_ms": 35.7656,
+          "e2e_err_pct": -33.12
+        }
+      ]
+    }
+  },
+  "delta_ntypes_sq_ms": 1.0315,
+  "C_quad": 27.899466,
+  "C_linear": 1433.678957,
+  "transition_lo": 0.4
+}
