@@ -2,17 +2,17 @@
     "model_type": "se_e2_a",
     "num_atoms": 256,
     "compute_force": true,
-    "e2e_latency": 5.0668,
-    "compute_latency": 0.8324,
-    "fw_latency": 0.8323600196251448,
+    "e2e_latency": 5.6851,
+    "compute_latency": 1.1986,
+    "fw_latency": 1.1985982056012587,
     "bw_latency": 0.0,
     "bwall_latency": 0.0,
     "acc_latency": 0.0,
     "overhead": {
-        "total_ms": 4.2344,
-        "kernel_launch_ms": 9.54,
-        "cpu_dispatch_ms": 5.0668,
-        "fixed_overhead_ms": 5.0668,
+        "total_ms": 4.4865,
+        "kernel_launch_ms": 10.1583,
+        "cpu_dispatch_ms": 5.6851,
+        "fixed_overhead_ms": 5.6851,
         "gpu_overhead_roofline_ms": 0.2179,
         "autograd_ms": 0.15,
         "cpu_scale": 1.0,
@@ -20,15 +20,15 @@
         "density_correction": 1.0
     },
     "kernel_count": {
-        "modeled": 64,
+        "modeled": 85,
         "framework": 260,
-        "total": 324
+        "total": 345
     },
     "confidence": {
         "level": "high",
         "regime": "overhead-bound",
-        "transition_ratio": 0.2073,
-        "e2e_lower_ms": 5.0668,
-        "e2e_upper_ms": 5.0668
+        "transition_ratio": 0.2492,
+        "e2e_lower_ms": 5.6851,
+        "e2e_upper_ms": 5.6851
     }
 }

@@ -12,6 +12,8 @@
         "total_ms": 19.6342,
         "kernel_launch_ms": 12.3667,
         "cpu_dispatch_ms": 21.0959,
+        "fixed_overhead_ms": 21.0959,
+        "gpu_overhead_roofline_ms": 0.9054,
         "autograd_ms": 0.0,
         "cpu_scale": 1.0,
         "gpu_scale": 1.0,
@@ -25,7 +27,7 @@
     "confidence": {
         "level": "high",
         "regime": "overhead-bound",
-        "transition_ratio": 0.1302,
+        "transition_ratio": 0.1122,
         "e2e_lower_ms": 21.0959,
         "e2e_upper_ms": 21.0959
     }

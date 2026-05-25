@@ -478,18 +478,52 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
       extended_force = torch.autograd.grad([energy], [extended_coord], ...)
       → 反向遍历: output -> fitting -> descriptor -> embedding
 
-    Backward of Linear(B, I, O): grad_input = Linear(B, O, I)
+    Backward of Linear(B, I, O) = nn.Linear with bias produces 3 CUDA kernels:
+      grad_input  = grad_y @ W            (B,O) @ (O,I) = (B,I)  → mm/Linear
+      grad_weight = grad_y^T @ input      (O,B) @ (B,I) = (O,I)  → mm/Linear
+      grad_bias   = grad_y.sum(dim=0)     (B,O) → (O,)            → sum reduction
+
+    So each backward Linear emits 3 ops: input_grad (Linear), weight_grad (Linear),
+    bias_grad (VECadd reduction over B). Earlier versions only emitted 1.
     """
     ng = emb_neuron[-1]
     ops = []
 
-    # ----- Output backward -----
-    ops.append(_op(
-        "output_bw", "Linear",
-        [("Linear", (N, 1, fit_neuron[-1]))],
-        [(N, 1)],
-        (N, fit_neuron[-1]),
-    ))
+    def _bw_linear_full(prefix, B, in_dim, out_dim):
+        """Emit the 3 ops for one backward Linear: input_grad + weight_grad + bias_grad.
+
+        PyTorch executes both grads as cuBLAS GEMMs whose FLOPS equal the forward
+        Linear's FLOPS (B·I·O). To stay within MLP_WAVE's training distribution,
+        emit both with the same arg tuple as the forward Linear; let the predictor
+        re-use its forward calibration for them.
+        """
+        FWD_ARGS = (B, in_dim, out_dim)  # same as forward Linear
+        # input grad: (B, O) @ (O, I) -> (B, I); FLOPS = B·I·O
+        ops.append(_op(
+            f"{prefix}_input_grad", "Linear",
+            [("Linear", FWD_ARGS)],
+            [(B, out_dim)],
+            (B, in_dim),
+        ))
+        # weight grad: (O, B) @ (B, I) -> (O, I); FLOPS = B·I·O
+        ops.append(_op(
+            f"{prefix}_weight_grad", "Linear",
+            [("Linear", FWD_ARGS)],
+            [(B, out_dim)],
+            (out_dim, in_dim),
+        ))
+        # bias grad: sum reduction over B; memory-bandwidth bound, NOT elementwise.
+        # Using VECadd here would feed the vec_predictor MemPerO≈B (way OOD) and
+        # blow up the prediction; use MEM (analytical bytes/BW) instead.
+        ops.append(_op(
+            f"{prefix}_bias_grad", "MEM",
+            [("MEM", [(B, out_dim)])],
+            [(B, out_dim)],
+            (out_dim,),
+        ))
+
+    # ----- Output backward (final linear projection to scalar energy) -----
+    _bw_linear_full("output_bw", N, fit_neuron[-1], 1)
 
     # ----- Fitting backward -----
     n_fit_nets = 1 if mixed_types else ntypes
@@ -500,12 +534,7 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
             out_dim = fit_neuron[i]
             in_dim = desc_dim if i == 0 else fit_neuron[i - 1]
 
-            ops.append(_op(
-                f"{prefix}_input_{i}", "Linear",
-                [("Linear", (N, out_dim, in_dim))],
-                [(N, out_dim)],
-                (N, in_dim),
-            ))
+            _bw_linear_full(f"{prefix}_input_{i}", N, in_dim, out_dim)
 
             ops.append(_op(
                 f"{prefix}_act_{i}", "VECmul",
@@ -515,7 +544,6 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
             ))
 
     # ----- Descriptor backward -----
-    # backward of final matmul: [N, ng, axis_neuron] -> [N, ng, 4]
     axis_neuron = desc_dim // ng if ng > 0 else 16
     ops.append(_op(
         "desc_bw_matmul", "BMM",
@@ -538,18 +566,11 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
                 (N, ni, ng),
             ))
 
-            # backward of embedding MLP
+            # backward of embedding MLP (per layer: 3 ops + activation backward)
             for i in range(len(emb_neuron) - 1, -1, -1):
                 out_dim = emb_neuron[i]
                 in_dim = 1 if i == 0 else emb_neuron[i - 1]
-
-                ops.append(_op(
-                    f"emb_t{ti}_bw_input_{i}", "Linear",
-                    [("Linear", (batch, out_dim, in_dim))],
-                    [(batch, out_dim)],
-                    (batch, in_dim),
-                ))
-
+                _bw_linear_full(f"emb_t{ti}_bw_{i}", batch, in_dim, out_dim)
                 ops.append(_op(
                     f"emb_t{ti}_bw_act_{i}", "VECmul",
                     [("VECmul", (batch, out_dim))],
@@ -557,15 +578,13 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
                     (batch, out_dim),
                 ))
     else:
-        # type_one_side=False: ntypes^2 个独立 backward 路径,
-        # 与 forward 的 (ti, tj) 双层循环对称
+        # type_one_side=False: ntypes^2 个独立 backward 路径
         ntypes_local = len(sel)
         for ti in range(ntypes_local):
             for tj in range(ntypes_local):
                 ni = sel[tj]
                 batch = N * ni
 
-                # backward of (ti,tj) matmul
                 ops.append(_op(
                     f"emb_t{ti}_n{tj}_bw_matmul", "BMM",
                     [("BMM", (N, ni, 4, ng))],
@@ -573,16 +592,10 @@ def _build_force_backward_ops(N, sel, emb_neuron, fit_neuron, desc_dim,
                     (N, ni, ng),
                 ))
 
-                # backward of (ti,tj) embedding MLP
                 for i in range(len(emb_neuron) - 1, -1, -1):
                     out_dim = emb_neuron[i]
                     in_dim = 1 if i == 0 else emb_neuron[i - 1]
-                    ops.append(_op(
-                        f"emb_t{ti}_n{tj}_bw_input_{i}", "Linear",
-                        [("Linear", (batch, out_dim, in_dim))],
-                        [(batch, out_dim)],
-                        (batch, in_dim),
-                    ))
+                    _bw_linear_full(f"emb_t{ti}_n{tj}_bw_{i}", batch, in_dim, out_dim)
                     ops.append(_op(
                         f"emb_t{ti}_n{tj}_bw_act_{i}", "VECmul",
                         [("VECmul", (batch, out_dim))],
